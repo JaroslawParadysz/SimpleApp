@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleapi
+  namespace: default
+  labels:
+    app: simpleapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simpleapi
+  template:
+    metadata:
+      labels:
+        app: simpleapi
+    spec:
+      containers:
+      - name: simpleapi
+        image: ghcr.io/jaroslawparadysz/simpleapp:main-da3b6dd
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/data
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/data
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
