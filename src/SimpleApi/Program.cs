@@ -13,6 +13,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Health check endpoint
+app.MapGet("/health", () => Results.Ok(new { Status = "Healthy" }))
+.WithName("HealthCheck")
+.WithOpenApi();
+
 // Simple GET endpoint that returns JSON data
 app.MapGet("/api/data", () =>
 {
