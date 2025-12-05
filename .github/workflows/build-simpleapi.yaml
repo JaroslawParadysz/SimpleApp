@@ -4,9 +4,17 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - 'Dockerfile'
+      - '.github/workflows/build-simpleapi.yaml'
   pull_request:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - 'Dockerfile'
+      - '.github/workflows/build-simpleapi.yaml'
   workflow_dispatch:
 
 env:
@@ -17,7 +25,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -61,3 +69,12 @@ jobs:
 
       - name: Image digest
         run: echo "Image pushed with digest ${{ steps.build.outputs.digest }}"
+
+      - name: Update deployment image tag
+        run: |
+          sed -i "s|image: ghcr.io/jaroslawparadysz/simpleapp:.*|image: ghcr.io/jaroslawparadysz/simpleapp:main-${GITHUB_SHA::7}|g" k8s-manifests/simpleapi-deployment.yaml
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add k8s-manifests/simpleapi-deployment.yaml
+          git commit -m "Update image tag to main-${GITHUB_SHA::7}"
+          git push
