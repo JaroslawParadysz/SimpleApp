@@ -19,8 +19,10 @@ app.MapGet("/health", () => Results.Ok(new { Status = "Healthy" }))
 .WithOpenApi();
 
 // Simple GET endpoint that returns JSON data
-app.MapGet("/api/data", () =>
+app.MapGet("/api/data", (ILogger<Program> logger) =>
 {
+    logger.LogInformation("Processing request to /api/data endpoint");
+    
     var data = new
     {
         Message = "Hello from Simple API!",
