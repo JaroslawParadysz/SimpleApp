@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: simpleapi
-        image: ghcr.io/jaroslawparadysz/simpleapp:main-9263b01
+        image: ghcr.io/jaroslawparadysz/simpleapp:main-3c5398d
         ports:
         - containerPort: 8080
           name: http
