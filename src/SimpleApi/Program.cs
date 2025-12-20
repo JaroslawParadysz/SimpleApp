@@ -1,7 +1,23 @@
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOpenApi();
+
+// Configure OpenTelemetry Metrics
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource
+        .AddService(serviceName: "SimpleApi", serviceVersion: "1.0.0"))
+    .WithMetrics(metrics => metrics
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddOtlpExporter(otlpOptions =>
+        {
+            // Grafana Alloy default OTLP endpoint
+            otlpOptions.Endpoint = new Uri(builder.Configuration["OpenTelemetry:OtlpEndpoint"] ?? "http://localhost:4317");
+        }));
 
 var app = builder.Build();
 
