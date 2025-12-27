@@ -44,6 +44,11 @@ app.MapGet("/health", () => Results.Ok(new { Status = "Healthy" }))
 .WithName("HealthCheck")
 .WithOpenApi();
 
+// Health check endpoint
+app.MapGet("/health2", () => Results.Ok(new { Status = "Healthy2" }))
+.WithName("HealthCheck2")
+.WithOpenApi();
+
 // Simple GET endpoint that returns JSON data
 app.MapGet("/api/data", (ILogger<Program> logger) =>
 {
